@@ -8,6 +8,7 @@
 
 ### Model Implementation
 - [ ] Initial model implementation
+- [ ] Model trainer class
 - [ ] Introduce more parameter configurations
 
 ### Usage Examples
