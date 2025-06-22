@@ -1,5 +1,9 @@
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/8c0fb9dd-7bf8-4b2d-aef1-03ef57f86711" height="125px"></img>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/4565f1bd-942e-48ce-b31d-df127c1ff04a">
+    <source media="(prefers-color-scheme: light)" srcset="https://github.com/user-attachments/assets/484d38b7-9f15-4d76-9c51-460df00deab9">
+    <img src="" height="125px"></img>
+  </picture>
 </p>
 
 ---
