@@ -7,8 +7,9 @@
 ## 🗺️ Roadmap
 
 ### Model Implementation
-- [ ] Initial model implementation
-- [ ] Model trainer class
+- [ ] Build initial model implementation
+- [ ] Write trainer class
+- [ ] Create custom WordPiece tokenizer
 - [ ] Introduce more parameter configurations
 
 ### Usage Examples
