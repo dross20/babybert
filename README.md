@@ -9,7 +9,7 @@
 ---
 Minimal implementation of the [BERT architecture proposed by Devlin et al.](https://arxiv.org/pdf/1810.04805) using the PyTorch library. This implementation focuses on simplicity and readability, so the model code is not optimized for inference or training efficiency. BabyBERT can be fine-tuned for downstream tasks such as named-entity recognition (NER), sentiment classification, or question answering (QA).
 
-See the [roadmap](.#roadmap) below for my future plans for this library!
+See the [roadmap](#%EF%B8%8F-roadmap) below for my future plans for this library!
 
 ## 📦 Installation
 
