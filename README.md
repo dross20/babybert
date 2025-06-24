@@ -7,7 +7,7 @@
 ## 🗺️ Roadmap
 
 ### Model Implementation
-- [ ] Build initial model implementation
+- [x] Build initial model implementation
 - [ ] Write trainer class
 - [ ] Create custom WordPiece tokenizer
 - [ ] Introduce more parameter configurations
