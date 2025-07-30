@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/4565f1bd-942e-48ce-b31d-df127c1ff04a">
-    <source media="(prefers-color-scheme: light)" srcset="https://github.com/user-attachments/assets/484d38b7-9f15-4d76-9c51-460df00deab9">
+    <source media="(prefers-color-scheme: dark)" srcset="https://github-production-user-asset-6210df.s3.amazonaws.com/73395516/457617114-4565f1bd-942e-48ce-b31d-df127c1ff04a.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20250730%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250730T150418Z&X-Amz-Expires=300&X-Amz-Signature=517a2f5a399d31633eb100321f8f1938c2a39ef21bc1be7d7af94ccfba41fee6&X-Amz-SignedHeaders=host">
+    <source media="(prefers-color-scheme: light)" srcset="https://github-production-user-asset-6210df.s3.amazonaws.com/73395516/457617051-484d38b7-9f15-4d76-9c51-460df00deab9.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20250730%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250730T150321Z&X-Amz-Expires=300&X-Amz-Signature=e8288dd394089a9fa2687ef99b23dde14530572ae5736d1a7695e5d0d1f9c166&X-Amz-SignedHeaders=host">
     <img src="" width="750px" style="height: auto;"></img>
   </picture>
 </p>
