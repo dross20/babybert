@@ -10,10 +10,12 @@
   
   <a href="https://www.python.org/">![Static Badge](https://img.shields.io/badge/python-3.12-blue)</a>
   <a href="https://pytorch.org/">![PyTorch](https://img.shields.io/badge/PyTorch-black?logo=PyTorch)</a>
+  <a href="">![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)</a>
   
 </div>
 
 ---
+
 Minimal implementation of the [BERT architecture proposed by Devlin et al.](https://arxiv.org/pdf/1810.04805) using the PyTorch library. This implementation focuses on simplicity and readability, so the model code is not optimized for inference or training efficiency. BabyBERT can be fine-tuned for downstream tasks such as named-entity recognition (NER), sentiment classification, or question answering (QA).
 
 See the [roadmap](#%EF%B8%8F-roadmap) below for my future plans for this library!
@@ -37,6 +39,7 @@ pip install git+https://github.com/dross20/babybert
 - [ ] Sentiment classification
 - [ ] Named entity recognition
 - [ ] Question answering
+
 
 
 
