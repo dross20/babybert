@@ -1,6 +1,6 @@
+import torch
 from config import BabyBERTConfig
 from model import BabyBERT
-import torch
 
 config = BabyBERTConfig(
     vocab_size=5,
