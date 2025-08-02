@@ -9,7 +9,7 @@
 <div align="center">
   
   <a href="https://www.python.org/">![Static Badge](https://img.shields.io/badge/python-3.12-blue)</a>
-  <a href="">![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=PyTorch&logoColor=white)</a>
+  <a href="https://pytorch.org/">![PyTorch](https://img.shields.io/badge/PyTorch-black?logo=PyTorch)</a>
   
 </div>
 
@@ -37,5 +37,6 @@ pip install git+https://github.com/dross20/babybert
 - [ ] Sentiment classification
 - [ ] Named entity recognition
 - [ ] Question answering
+
 
 
