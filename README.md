@@ -8,7 +8,8 @@
 
 <div align="center">
   
-  <a href="https://www.python.org/">![Static Badge](https://img.shields.io/badge/python-3.12-blue)</a>
+  <a href="https://www.python.org/">![Static Badge](https://img.shields.io/badge/python-3.12-orange)</a>
+  <a href="https://www.github.com/dross20/babybert">![GitHub license](https://img.shields.io/badge/license-MIT-yellow.svg)</a>
   <a href="https://pytorch.org/">![PyTorch](https://img.shields.io/badge/PyTorch-black?logo=PyTorch)</a>
   <a href="https://github.com/astral-sh/ruff">![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)</a>
   
@@ -39,6 +40,7 @@ pip install git+https://github.com/dross20/babybert
 - [ ] Sentiment classification
 - [ ] Named entity recognition
 - [ ] Question answering
+
 
 
 
