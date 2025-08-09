@@ -190,10 +190,8 @@ class BabyBERTForMLM(nn.Module):
 
             # Here's where the important stuff happens - at each masked position in
             # the input sequence, we compare the predicted token probabilities to
-            # the true token IDs.
-            #
-            # If they match up, we have a low loss value; if they're substantially
-            # different, our loss will be higher.
+            # the true token IDs. If they match up, we have a low loss value; if
+            # they're substantially different, our loss will be higher.
             loss = F.cross_entropy(
                 flattened_logits,
                 flattened_labels,
