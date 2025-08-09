@@ -134,21 +134,17 @@ class BabyBERT(nn.Module):
             [TransformerBlock(config) for _ in range(config.n_blocks)]
         )
 
-    def forward(self, x, mask=None):
+    def forward(self, x, mask=None, segment_encodings=None):
         # Get the position IDs - these range from 0 to the max length of an input
         # sequence (stored in the block_size variable).
         position_ids = torch.arange(
             0, self.config.block_size, device=x.device
         ).unsqueeze(0)
 
-        # Find the location of the [SEP] token. If there's just one segment in the
-        # input, [SEP] will occur at the end of the input.
-        sep_token_mask = x == self.config.sep_token_id
-        sep_token_position = sep_token_mask.int().argmax(dim=1).unsqueeze(1)
-
-        # All positions leading up to and including the [SEP] token belong to segment 0;
-        # the rest belong to segment 1.
-        segment_encodings = (position_ids > sep_token_position).long()
+        # If no segment encodings tensor was passed in, assume everything belongs
+        # to the first segment (represented by '0')
+        if segment_encodings is None:
+            segment_encodings = torch.zeros_like(x)
 
         # Sum the token, segment, and positional embeddings to obtain the complete
         # embedding tensor.
