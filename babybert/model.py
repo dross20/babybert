@@ -163,3 +163,45 @@ class BabyBERT(nn.Module):
             x = block(x, mask)
 
         return x
+
+
+class BabyBERTForMLM(nn.Module):
+    """BabyBERT model with added masked language modeling (MLM) head."""
+
+    def __init__(self, bert):
+        super().__init__()
+
+        self.bert = bert
+        self.config = self.bert.config
+
+        # Projection from each BabyBERT contextual embedding to the vocabulary space.
+        self.mlm_head = nn.Linear(self.config.hidden_size, self.config.vocab_size)
+
+    def forward(self, x, mask=None, labels=None):
+        x = self.bert(x, mask)
+
+        # Obtain the logits for each contextual embedding - we'll only use the logits
+        # from the [MASK] tokens.
+        mlm_logits = self.mlm_head(x)
+
+        loss = None
+
+        if labels is not None:
+            # Flatten the logit and label vectors, rendering them suitable inputs for
+            # PyTorch's cross entropy loss function.
+            flattened_logits = mlm_logits.view(-1, mlm_logits.size(-1))
+            flattened_labels = labels.view(-1)
+
+            # Here's where the important stuff happens - at each masked position in
+            # the input sequence, we compare the predicted token probabilities to
+            # the true token IDs.
+            #
+            # If they match up, we have a low loss value; if they're substantially
+            # different, our loss will be higher.
+            loss = F.cross_entropy(
+                flattened_logits,
+                flattened_labels,
+                ignore_index=self.config.ignore_index,
+            )
+
+        return mlm_logits, loss
