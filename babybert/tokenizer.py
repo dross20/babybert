@@ -3,6 +3,9 @@ from typing import Dict, List, Tuple
 
 
 class WordPieceTokenizer:
+    def __init__(self):
+        self.vocab = set()
+
     def _pretokenize(self, word: str) -> List[str]:
         punctuation = ".!?,;"
         output = []
@@ -57,8 +60,6 @@ class WordPieceTokenizer:
         return a + b[2:] if b.startswith("##") else a + b
 
     def train(self, corpus: List[str], target_vocab_size: int = 1000) -> None:
-        vocab = []
-
         words = [word for sentence in corpus for word in sentence.split()]
         pretokenized_words = [
             pretokenized for word in words for pretokenized in self._pretokenize(word)
@@ -77,7 +78,7 @@ class WordPieceTokenizer:
         while len(vocab) < target_vocab_size:
             scores = self._compute_pair_scores(words_tokenized)
             merge_pair = max(scores, key=scores.get)
-            replacement = self._make_replacement(merge_pair)
+            replacement = self._make_replacement(*merge_pair)
             vocab.add(replacement)
             words_tokenized = self._merge_tokens(
                 *merge_pair, replacement, words_tokenized
@@ -86,28 +87,28 @@ class WordPieceTokenizer:
         self.vocab = vocab
 
     def _encode_word(self, word: str) -> List[str]:
-        vocab = list(self.vocab)
+        vocab = self.vocab
         tokens = []
         while word:
             i = len(word)
             while i > 0 and word[:i] not in vocab:
-                print(word[:i])
                 i = i - 1
             if i == 0:
                 return ["[UNK]"]
             tokens.append(word[:i])
-            print(tokens)
             word = word[i:]
             if len(word) > 0:
                 word = f"##{word}"
         return tokens
 
-    def tokenize(self, text: str) -> Tuple:
+    def tokenize(self, text: str) -> List[str]:
         words = [word for word in text.split()]
         pretokenized_words = [
             pretokenized for word in words for pretokenized in self._pretokenize(word)
         ]
-        encoded = [self._encode_word(word) for word in pretokenized_words]
+        encoded = [
+            token for word in pretokenized_words for token in self._encode_word(word)
+        ]
         return encoded
 
     @property
@@ -116,4 +117,4 @@ class WordPieceTokenizer:
 
     @classmethod
     def from_pretrained(cls, name):
-        return cls()
+        raise NotImplementedError
