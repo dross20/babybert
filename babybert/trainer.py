@@ -1,8 +1,10 @@
 import torch
-from config import TrainerConfig
 from model import BabyBERT, BabyBERTForMLM
 from torch.utils.data import DataLoader, Dataset
 
+class TrainerConfig:
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
 
 class Trainer:
     """Simple trainer class for pretraining BabyBERT using masked language modeling."""

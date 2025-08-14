@@ -5,9 +5,19 @@ import warnings
 from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List, Tuple
+from dataclasses import dataclass, field
 
-from config import TokenizerConfig
+@dataclass
+class TokenizerConfig:
+    _special_tokens: List[str] = field(
+        default_factory=lambda: ["[CLS]", "[PAD]", "[SEP]", "[MASK]"]
+    )
+    unknown_token: str = "[UNK]"
+    target_vocab_size: int = 1000
 
+    @property
+    def special_tokens(self):
+        return [*self._special_tokens, self.unknown_token]
 
 class WordPieceTokenizer:
     """Basic implementation of WordPiece tokenizer."""

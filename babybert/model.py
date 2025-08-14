@@ -4,6 +4,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+class BabyBERTConfig:
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
 
 class AttentionHead(nn.Module):
     """Implementation of a single self-attention head."""
