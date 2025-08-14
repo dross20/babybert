@@ -1,12 +1,12 @@
-.PHONY: style, check, install, test
+.PHONY: check, style, install, install-dev, test, clean, all
 
 check:
 	ruff check
 	ruff format --diff
 
 style:
-	ruff check --fix
 	ruff format
+	ruff check --fix
 
 install:
 	pip install .
