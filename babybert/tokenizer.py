@@ -3,9 +3,10 @@ from __future__ import annotations
 import re
 import warnings
 from collections import defaultdict
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Tuple
-from dataclasses import dataclass, field
+
 
 @dataclass
 class TokenizerConfig:
@@ -18,6 +19,7 @@ class TokenizerConfig:
     @property
     def special_tokens(self):
         return [*self._special_tokens, self.unknown_token]
+
 
 class WordPieceTokenizer:
     """Basic implementation of WordPiece tokenizer."""

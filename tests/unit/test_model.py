@@ -1,7 +1,6 @@
 import torch
 
-from babybert.config import BabyBERTConfig
-from babybert.model import BabyBERT
+from babybert.model import BabyBERT, BabyBERTConfig
 
 
 def test_forward_pass():
