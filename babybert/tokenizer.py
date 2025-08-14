@@ -145,7 +145,7 @@ class WordPieceTokenizer:
             >>> WordPieceTokenizer._make_replacement("h", "##i")
             "hi"
         """
-        return a + b[2:] if b.startswith("##") else b
+        return a + (b[2:] if b.startswith("##") else b)
 
     @staticmethod
     def _get_character_tokens(word: str):
@@ -231,7 +231,7 @@ class WordPieceTokenizer:
             >>> WordPieceTokenizer._make_all_prefix_substrings("garage")
             ["garage", "garag", "gara", "gar", "ga", "g"]
         """
-        return [string[:-i] if i != 0 else string for i in range(len(string))]
+        return [string[:-i] if i != 0 else string for i in range(len(string) + 1)]
 
     def _encode_word(self, word: str) -> List[str]:
         """
