@@ -32,7 +32,7 @@ pip install git+https://github.com/dross20/babybert
 ### Model Implementation
 - [x] Build initial model implementation
 - [x] Write trainer class
-- [ ] Create custom WordPiece tokenizer
+- [x] Create custom WordPiece tokenizer
 - [ ] Introduce more parameter configurations
 - [ ] Set up pretrained model checkpoints
 
