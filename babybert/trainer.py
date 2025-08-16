@@ -39,6 +39,7 @@ class Trainer:
             batch_size=config.batch_size,
             num_workers=config.num_workers,
             shuffle=True,
+            collate_fn=config.collator
         )
 
         model.train()
