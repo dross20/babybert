@@ -12,14 +12,15 @@ class TokenizerConfig:
     """Configuration class for a tokenizer."""
 
     _special_tokens: list[str] = field(
-        default_factory=lambda: ["[CLS]", "[PAD]", "[SEP]", "[MASK]"]
+        default_factory=lambda: ["[CLS]", "[SEP]", "[MASK]"]
     )
+    padding_token: str = "[PAD]"
     unknown_token: str = "[UNK]"
     target_vocab_size: int = 1000
 
     @property
     def special_tokens(self):
-        return [*self._special_tokens, self.unknown_token]
+        return [*self._special_tokens, self.padding_token, self.unknown_token]
 
 
 class WordPieceTokenizer:
@@ -275,17 +276,65 @@ class WordPieceTokenizer:
         ]
         return encoded
 
-    def encode(self, text: str) -> list[int]:
+    def encode(
+        self,
+        text: str,
+        padding: bool = False,
+        padding_length: int | None = None,
+    ) -> list[int]:
         """
-        Encodes an text as a list of token IDs.
+        Encodes a text as a list of token IDs.
 
         Args:
             text: The text to encode.
+            padding: `True` if output list should be padded to a certain length,
+                     `False` otherwise.
+            padding_length: The length to which the output lists should be padded.
         Returns:
             The token IDs of the tokenized text.
         """
         tokens = self.tokenize(text)
-        return [self.vocab.index(token) for token in tokens]
+        token_ids = [self.vocab.index(token) for token in tokens]
+        if padding:
+            padding_token_id = self.vocab.index(self.config.padding_token)
+            token_ids += [padding_token_id] * (padding_length - len(token_ids))
+        return token_ids
+
+    def batch_encode(
+        self, texts: list[str], padding: bool = True, padding_length: int | None = None
+    ) -> dict[str, list[int]]:
+        """
+        Encodes a batch of texts as token ID lists.
+
+        Args:
+            texts: The list of texts to encode.
+            padding: `True` if all the output token ID lists should be padded to a
+                     certain length, `False` otherwise.
+            padding_length: The length to which the output token ID lists should be
+                            padded. If `None`, the output lists will be padded to the
+                            length of the longest sequence in the batch.
+        Returns:
+            A dictionary with two entries: 'token_ids', containing the token IDs for
+            each text sequence in the batch, 'attention_masks', containing the
+            attention masks for each sequence in the batch.
+        """
+        tokens = [self.tokenize(text) for text in texts]
+
+        if padding_length is None:
+            padding_length = max(len(t) for t in tokens)
+
+        token_ids = [
+            self.encode(text, padding, padding_length)
+            for text in texts
+        ]
+
+        padding_token_id = self.vocab.index(self.config.padding_token)
+        attention_masks = [
+            [0 if token_id == padding_token_id else 1 for token_id in toks]
+            for toks in token_ids
+        ]
+
+        return {"token_ids": token_ids, "attention_masks": attention_masks}
 
     def decode(self, token_ids: str) -> list[str]:
         """
