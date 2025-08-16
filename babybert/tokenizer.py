@@ -315,7 +315,7 @@ class WordPieceTokenizer:
                             length of the longest sequence in the batch.
         Returns:
             A dictionary with two entries: 'token_ids', containing the token IDs for
-            each text sequence in the batch, 'attention_masks', containing the
+            each text sequence in the batch, and 'attention_mask', containing the
             attention masks for each sequence in the batch.
         """
         tokens = [self.tokenize(text) for text in texts]
@@ -326,12 +326,12 @@ class WordPieceTokenizer:
         token_ids = [self.encode(text, padding, padding_length) for text in texts]
 
         padding_token_id = self.vocab.index(self.config.padding_token)
-        attention_masks = [
+        attention_mask = [
             [0 if token_id == padding_token_id else 1 for token_id in toks]
             for toks in token_ids
         ]
 
-        return {"token_ids": token_ids, "attention_masks": attention_masks}
+        return {"token_ids": token_ids, "attention_mask": attention_mask}
 
     def decode(
         self, token_ids: list[int], ignore_special_tokens: bool = True
