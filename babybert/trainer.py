@@ -1,6 +1,12 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 import torch
-from model import BabyBERT, BabyBERTForMLM
 from torch.utils.data import DataLoader, Dataset
+
+if TYPE_CHECKING:
+    from model import BabyBERT, BabyBERTForMLM
 
 
 class TrainerConfig:

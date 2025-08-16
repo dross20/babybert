@@ -5,12 +5,13 @@ import warnings
 from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 
 @dataclass
 class TokenizerConfig:
-    _special_tokens: List[str] = field(
+    """Configuration class for a tokenizer."""
+
+    _special_tokens: list[str] = field(
         default_factory=lambda: ["[CLS]", "[PAD]", "[SEP]", "[MASK]"]
     )
     unknown_token: str = "[UNK]"
@@ -29,7 +30,7 @@ class WordPieceTokenizer:
         self.vocab = []
 
     @staticmethod
-    def _pretokenize(text: str) -> List[str]:
+    def _pretokenize(text: str) -> list[str]:
         """
         Perform pretokenization on a text. Carries out the following steps:
 
@@ -52,7 +53,7 @@ class WordPieceTokenizer:
 
     @staticmethod
     def _score_pair(
-        first_token: str, second_token: str, pair_freq: int, token_freqs: Dict[str, int]
+        first_token: str, second_token: str, pair_freq: int, token_freqs: dict[str, int]
     ) -> float:
         """
         Computes the WordPiece score of a pair of tokens using the following
@@ -72,7 +73,7 @@ class WordPieceTokenizer:
         return pair_freq / (token_freqs[first_token] * token_freqs[second_token])
 
     @staticmethod
-    def _compute_pair_scores(tokenized: List[str]) -> Dict[Tuple[str, str], float]:
+    def _compute_pair_scores(tokenized: list[str]) -> dict[tuple[str, str], float]:
         """
         Compute the WordPiece score for each consecutive pair of tokens in the corpus.
 
@@ -99,8 +100,8 @@ class WordPieceTokenizer:
 
     @staticmethod
     def _merge_tokens(
-        pair: Tuple[str, str], replacement: str, words: List[List[str]]
-    ) -> Dict[str, List[str]]:
+        pair: tuple[str, str], replacement: str, words: list[list[str]]
+    ) -> dict[str, list[str]]:
         """
         Finds instances of the specified pair of consecutive tokens and replaces them
         with a new token.
@@ -167,7 +168,7 @@ class WordPieceTokenizer:
             for i, character in enumerate(word)
         ]
 
-    def train(self, corpus: List[str]) -> None:
+    def train(self, corpus: list[str]) -> None:
         """
         Trains a tokenizer using the WordPiece protocol. The training comprises the
         following steps:
@@ -217,7 +218,7 @@ class WordPieceTokenizer:
             word_tokens = self._merge_tokens(merge_pair, replacement, word_tokens)
 
     @staticmethod
-    def _make_all_prefix_substrings(string: str) -> List[str]:
+    def _make_all_prefix_substrings(string: str) -> list[str]:
         """
         Generates all prefix substrings from a given string.
         Utility function for `_encode_word`.
@@ -233,7 +234,7 @@ class WordPieceTokenizer:
         """
         return [string[:-i] if i != 0 else string for i in range(len(string) + 1)]
 
-    def _encode_word(self, word: str) -> List[str]:
+    def _encode_word(self, word: str) -> list[str]:
         """
         Encodes a word using a longest-first matching strategy. Uses tokens from the
         vocabulary to encode the word.
@@ -258,7 +259,7 @@ class WordPieceTokenizer:
                 elif not substring:
                     return [self.config.unknown_token]
 
-    def tokenize(self, text: str) -> List[str]:
+    def tokenize(self, text: str) -> list[str]:
         """
         Tokenizes a text, converting it into a set of tokens contained in the
         tokenizer's vocabulary.
@@ -274,7 +275,7 @@ class WordPieceTokenizer:
         ]
         return encoded
 
-    def encode(self, text: str) -> List[int]:
+    def encode(self, text: str) -> list[int]:
         """
         Encodes an text as a list of token IDs.
 
@@ -286,7 +287,7 @@ class WordPieceTokenizer:
         tokens = self.tokenize(text)
         return [self.vocab.index(token) for token in tokens]
 
-    def decode(self, token_ids: str) -> List[str]:
+    def decode(self, token_ids: str) -> list[str]:
         """
         Decodes a text from a list of token IDs.
 
@@ -298,7 +299,7 @@ class WordPieceTokenizer:
         return [self.vocab[index] for index in token_ids]
 
     @property
-    def vocab_size(self):
+    def vocab_size(self) -> int:
         """The number of tokens in the vocabulary."""
         return len(self.vocab)
 
@@ -316,5 +317,12 @@ class WordPieceTokenizer:
         """
         raise NotImplementedError
 
+    @classmethod
     def save_pretrained(self, directory: Path) -> None:
+        """
+        Save a pretrained tokenizer to a file.
+
+        Args:
+            directory: The directory to which to save the pretrained tokenizer.
+        """
         raise NotImplementedError

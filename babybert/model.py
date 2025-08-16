@@ -13,7 +13,7 @@ class BabyBERTConfig:
 class AttentionHead(nn.Module):
     """Implementation of a single self-attention head."""
 
-    def __init__(self, config):
+    def __init__(self, config: BabyBERTConfig):
         super().__init__()
 
         # The size of each attention head's latent space is equal to the embedding
@@ -63,7 +63,7 @@ class AttentionHead(nn.Module):
 class MultiHeadSelfAttention(nn.Module):
     """Implementation of a multi-head self-attention layer."""
 
-    def __init__(self, config):
+    def __init__(self, config: BabyBERTConfig):
         super().__init__()
 
         # Initialize n attention heads - this allows us to capture n sets of
@@ -89,7 +89,7 @@ class MultiHeadSelfAttention(nn.Module):
 class TransformerBlock(nn.Module):
     """Implementation of a transformer block."""
 
-    def __init__(self, config):
+    def __init__(self, config: BabyBERTConfig):
         super().__init__()
 
         self.mhsa = MultiHeadSelfAttention(config)
@@ -118,7 +118,7 @@ class TransformerBlock(nn.Module):
 class BabyBERT(nn.Module):
     """Minimal implementation of [BERT](https://arxiv.org/pdf/1810.04805)."""
 
-    def __init__(self, config):
+    def __init__(self, config: BabyBERTConfig):
         super().__init__()
 
         self.config = config
@@ -169,7 +169,7 @@ class BabyBERT(nn.Module):
 class BabyBERTForMLM(nn.Module):
     """BabyBERT model with added masked language modeling (MLM) head."""
 
-    def __init__(self, bert):
+    def __init__(self, bert: BabyBERT):
         super().__init__()
 
         self.bert = bert
