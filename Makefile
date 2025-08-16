@@ -1,4 +1,4 @@
-.PHONY: check, style, install, install-dev, test, clean, all
+.PHONY: check style install install-dev test clean all
 
 check:
 	ruff check
