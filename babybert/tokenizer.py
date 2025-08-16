@@ -323,10 +323,7 @@ class WordPieceTokenizer:
         if padding_length is None:
             padding_length = max(len(t) for t in tokens)
 
-        token_ids = [
-            self.encode(text, padding, padding_length)
-            for text in texts
-        ]
+        token_ids = [self.encode(text, padding, padding_length) for text in texts]
 
         padding_token_id = self.vocab.index(self.config.padding_token)
         attention_masks = [
@@ -336,16 +333,40 @@ class WordPieceTokenizer:
 
         return {"token_ids": token_ids, "attention_masks": attention_masks}
 
-    def decode(self, token_ids: str) -> list[str]:
+    def decode(
+        self, token_ids: list[int], ignore_special_tokens: bool = True
+    ) -> list[str]:
         """
         Decodes a text from a list of token IDs.
 
         Args:
             token_ids: The token IDs to decode.
+            ignore_special_tokens: `True` if special tokens should be omitted from the
+                                   output, `False` otherwise.
         Returns:
             The text decoded from the token IDs.
         """
-        return [self.vocab[index] for index in token_ids]
+        return [
+            token
+            for index in token_ids
+            if (token := self.vocab[index]) not in self.config.special_tokens
+            or not ignore_special_tokens
+        ]
+
+    def batch_decode(
+        self, token_ids: list[list[int]], ignore_special_tokens: bool = True
+    ) -> list[list[str]]:
+        """
+        Decodes texts from a batch of token IDs.
+
+        Args:
+            token_ids: The batch of token IDs to decode.
+            ignore_special_tokens: `True` if special tokens should be omitted from the
+                                   the output, `False` otherwise.
+        Returns:
+            The batch of texts decoded from the token IDs.
+        """
+        return [self.decode(tokens, ignore_special_tokens) for tokens in token_ids]
 
     @property
     def vocab_size(self) -> int:
