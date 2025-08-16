@@ -231,7 +231,7 @@ class WordPieceTokenizer:
 
         Examples:
             >>> WordPieceTokenizer._make_all_prefix_substrings("garage")
-            ["garage", "garag", "gara", "gar", "ga", "g"]
+            ["garage", "garag", "gara", "gar", "ga", "g", ""]
         """
         return [string[:-i] if i != 0 else string for i in range(len(string) + 1)]
 
