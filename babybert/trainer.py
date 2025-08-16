@@ -15,7 +15,7 @@ class TrainerConfig:
 
 
 class Trainer:
-    """Simple trainer class for pretraining BabyBERT using masked language modeling."""
+    """Simple model-agnostic PyTorch trainer class."""
 
     def __init__(self, model: nn.Module, config: TrainerConfig):
         self.model = model
