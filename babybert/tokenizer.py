@@ -11,16 +11,20 @@ from pathlib import Path
 class TokenizerConfig:
     """Configuration class for a tokenizer."""
 
-    _special_tokens: list[str] = field(
-        default_factory=lambda: ["[CLS]", "[SEP]", "[MASK]"]
-    )
+    _special_tokens: list[str] = field(default_factory=lambda: ["[CLS]", "[SEP]"])
     padding_token: str = "[PAD]"
     unknown_token: str = "[UNK]"
+    mask_token: str = "[MASK]"
     target_vocab_size: int = 1000
 
     @property
     def special_tokens(self):
-        return [*self._special_tokens, self.padding_token, self.unknown_token]
+        return [
+            *self._special_tokens,
+            self.padding_token,
+            self.unknown_token,
+            self.mask_token,
+        ]
 
 
 class WordPieceTokenizer:
@@ -276,6 +280,17 @@ class WordPieceTokenizer:
         ]
         return encoded
 
+    def get_token_index(self, token: str) -> int:
+        """
+        Gets the index of a token in the tokenizer's vocabulary.
+
+        Args:
+            token: The token for which to find the index.
+        Returns:
+            The token's index in the vocabulary.
+        """
+        return self.vocab.index(token)
+
     def encode(
         self,
         text: str,
@@ -294,10 +309,9 @@ class WordPieceTokenizer:
             The token IDs of the tokenized text.
         """
         tokens = self.tokenize(text)
-        token_ids = [self.vocab.index(token) for token in tokens]
+        token_ids = [self.get_token_index(token) for token in tokens]
         if padding:
-            padding_token_id = self.vocab.index(self.config.padding_token)
-            token_ids += [padding_token_id] * (padding_length - len(token_ids))
+            token_ids += [self.padding_token_id] * (padding_length - len(token_ids))
         return token_ids
 
     def batch_encode(
@@ -325,9 +339,8 @@ class WordPieceTokenizer:
 
         token_ids = [self.encode(text, padding, padding_length) for text in texts]
 
-        padding_token_id = self.vocab.index(self.config.padding_token)
         attention_mask = [
-            [0 if token_id == padding_token_id else 1 for token_id in toks]
+            [0 if token_id == self.padding_token_id else 1 for token_id in toks]
             for toks in token_ids
         ]
 
@@ -396,3 +409,15 @@ class WordPieceTokenizer:
             directory: The directory to which to save the pretrained tokenizer.
         """
         raise NotImplementedError
+
+    @property
+    def special_token_ids(self) -> list[int]:
+        return [self.get_token_index(token) for token in self.config.special_tokens]
+
+    @property
+    def padding_token_id(self) -> int:
+        return self.get_token_index(self.config.padding_token)
+
+    @property
+    def mask_token_id(self) -> int:
+        return self.get_token_index(self.config.mask_token)

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import torch
 from torch.utils.data import Dataset
 
 if TYPE_CHECKING:
@@ -52,6 +53,64 @@ class CollatorForMLM:
         self.tokenizer = tokenizer
         self.mask_prob = mask_prob
 
-    def __call__(self, batch):
+    def __call__(
+        self, batch: list[tuple[list[int], list[int]]]
+    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        """
+        Perform collation and masking on the input batch.
+
+        Args:
+            batch: The batch of tokens to collate and mask.
+        Returns:
+            The masked token IDs, the attention mask, and the labels for masked tokens.
+        """
         token_ids, attention_mask = zip(*batch)
-        ...
+
+        batched_token_ids = torch.tensor(token_ids)
+        batched_attention_mask = torch.tensor(attention_mask)
+
+        masked_token_ids, labels = self._mask_tokens(batched_token_ids)
+
+        return masked_token_ids, batched_attention_mask, labels
+
+    def _mask_tokens(
+        self, token_ids: torch.Tensor
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        """
+        Masks tokens in a batch of token IDs, returning the masked input sequence and
+        the labels.
+
+        Args:
+            token_ids: The batch of token IDs to mask.
+        Returns:
+            The tensor containing the batch of token IDs after performing masking and
+            the tensor containing the labels (-100 for unmasked tokens).
+        """
+        # This is where we generate the MLM mask. We begin by generating a random value
+        # between 0 and 1 for each token ID in the batch. Then, each random value below
+        # our masking probability value becomes a masked token (a `True` in the mask),
+        # and all other remain unmasked (a `False` in the mask).
+        probs = torch.rand_like(token_ids, dtype=torch.float32)
+        mlm_mask = probs < self.mask_prob
+
+        # We also want to make sure that we don't accidentally mask a special token;
+        # our model doesn't need to know how to predict a padding token! To do this,
+        # we create another mask for special tokens.
+        special_tokens_mask = ~torch.isin(
+            token_ids, torch.tensor(self.tokenizer.special_token_ids)
+        )
+
+        # We combine our MLM and special tokens masks together to form our final mask.
+        mask = mlm_mask & special_tokens_mask
+
+        mask_id = self.tokenizer.mask_token_id
+
+        # Finally, we perform the masking: all tokens selected for masking are replaced
+        # with "[MASK]".
+        masked_token_ids = token_ids.masked_fill(mask, mask_id)
+
+        # We only want labels for the masked tokens, as that's what we're trying to
+        # predict during training. All other tokens are set to -100 in the label
+        # tensor (and consequently ignored by our loss function.)
+        labels = token_ids.masked_fill(~mask, -100)
+        return masked_token_ids, labels
