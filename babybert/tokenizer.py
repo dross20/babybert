@@ -6,6 +6,8 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
 
+import json
+
 
 @dataclass
 class TokenizerConfig:
@@ -387,28 +389,47 @@ class WordPieceTokenizer:
         return len(self.vocab)
 
     @classmethod
-    def from_pretrained(cls, name: str) -> WordPieceTokenizer:
+    def from_pretrained(cls, name: str | Path) -> WordPieceTokenizer:
         """
-        Load a pretrained tokenizer from a checkpoint.
+        Load a pretrained tokenizer from a directory.
 
         Args:
-            name: The name of the checkpoint from which to save the model
-            (small, base, large).
+            name: The name of the directory from which to load the model.
         Returns:
             A `WordPieceTokenizer` with a pretrained vocabulary and preset
             configuration.
         """
-        raise NotImplementedError
+        name = Path(name)
 
-    @classmethod
-    def save_pretrained(self, directory: Path) -> None:
+        with open(name / "tok_config.json", "r") as config_file:
+            config_dict = json.load(config_file)
+        config = TokenizerConfig(**config_dict)
+
+        tokenizer = cls(config)
+
+        with open(name / "vocab.txt", "r") as vocab_file:
+            vocab = [line.strip() for line in vocab_file]
+
+        tokenizer.vocab = vocab
+
+        return tokenizer
+
+    def save_pretrained(self, name: str | Path) -> None:
         """
         Save a pretrained tokenizer to a file.
 
         Args:
             directory: The directory to which to save the pretrained tokenizer.
         """
-        raise NotImplementedError
+        name = Path(name)
+        name.mkdir(parents=True, exist_ok=True)
+
+        with open(name / "tok_config.json", "w") as config_file:
+            json.dump(self.config.__dict__, config_file)
+        
+        with open(name / "vocab.txt", "w") as vocab_file:
+            for token in self.vocab:
+                vocab_file.write(f"{token}\n")
 
     @property
     def special_token_ids(self) -> list[int]:

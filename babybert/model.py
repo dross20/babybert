@@ -170,7 +170,7 @@ class BabyBERT(nn.Module):
         return x
 
     @classmethod
-    def from_pretrained(cls, name: Path) -> BabyBERT:
+    def from_pretrained(cls, name: str | Path) -> BabyBERT:
         """
         Loads a pretrained `BabyBERT` model from a directory. The directory should
         contain a file named `config.json`, which stores the configuration settings,
@@ -183,6 +183,8 @@ class BabyBERT(nn.Module):
             An instance of `BabyBERT` with configuration settings and weights loaded
             from the input directory.
         """
+        name = Path(name)
+
         with open(name / "config.json", "r") as config_file:
             config_dict = json.load(config_file)
         config = BabyBERTConfig(**config_dict)
@@ -194,7 +196,7 @@ class BabyBERT(nn.Module):
 
         return model
 
-    def save_pretrained(self, name: Path) -> None:
+    def save_pretrained(self, name: str | Path) -> None:
         """
         Saves a pretrained `BabyBERT` model in a directory for later use. Creates two
         new files in the directory: one called `config.json`, which contains
@@ -205,6 +207,7 @@ class BabyBERT(nn.Module):
             name: The directory in which to save the model's configuration settings and
                   weights.
         """
+        name = Path(name)
         name.mkdir(parents=True, exist_ok=True)
 
         with open(name / "config.json", "w") as config_file:
