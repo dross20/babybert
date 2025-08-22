@@ -1,4 +1,8 @@
+from __future__ import annotations
+
+import json
 import math
+from pathlib import Path
 
 import torch
 import torch.nn as nn
@@ -164,6 +168,49 @@ class BabyBERT(nn.Module):
             x = block(x, mask)
 
         return x
+
+    @classmethod
+    def from_pretrained(cls, name: Path) -> BabyBERT:
+        """
+        Loads a pretrained `BabyBERT` model from a directory. The directory should
+        contain a file named `config.json`, which stores the configuration settings,
+        and a file named `pytorch_model.bin`, which contains the model weights.
+
+        Args:
+            name: The directory containing the `BabyBERT` model configuration settings
+                  and weights.
+        Returns:
+            An instance of `BabyBERT` with configuration settings and weights loaded
+            from the input directory.
+        """
+        with open(name / "config.json", "r") as config_file:
+            config_dict = json.load(config_file)
+        config = BabyBERTConfig(**config_dict)
+
+        model = cls(config)
+
+        state_dict = torch.load(name / "pytorch_model.bin", weights_only=True)
+        model.load_state_dict(state_dict)
+
+        return model
+
+    def save_pretrained(self, name: Path) -> None:
+        """
+        Saves a pretrained `BabyBERT` model in a directory for later use. Creates two
+        new files in the directory: one called `config.json`, which contains
+        configuration settings, and another called `pytorch_model.bin`, which contains
+        the model weights.
+
+        Args:
+            name: The directory in which to save the model's configuration settings and
+                  weights.
+        """
+        name.mkdir(parents=True, exist_ok=True)
+
+        with open(name / "config.json", "w") as config_file:
+            json.dump(self.config.__dict__, config_file)
+
+        torch.save(self.state_dict(), name / "pytorch_model.bin")
 
 
 class BabyBERTForMLM(nn.Module):
