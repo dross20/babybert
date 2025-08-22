@@ -24,7 +24,7 @@ class Trainer:
 
     def run(self, data: Dataset):
         """
-        Pretrain the BabyBERT model on the provided dataset.
+        Train the BabyBERT model on the provided dataset.
 
         Args:
             data: The `Dataset` to use for training.
