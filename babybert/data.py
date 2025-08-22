@@ -49,9 +49,15 @@ class LanguageModelingDataset(Dataset):
 class CollatorForMLM:
     """Data collator for applying masks to batches of tokens."""
 
-    def __init__(self, tokenizer: WordPieceTokenizer, mask_prob: float = 0.1):
+    def __init__(
+        self,
+        tokenizer: WordPieceTokenizer,
+        mask_prob: float = 0.1,
+        ignore_index: int = -100,
+    ):
         self.tokenizer = tokenizer
         self.mask_prob = mask_prob
+        self.ignore_index = ignore_index
 
     def __call__(
         self, batch: list[tuple[list[int], list[int]]]
@@ -103,14 +109,12 @@ class CollatorForMLM:
         # We combine our MLM and special tokens masks together to form our final mask.
         mask = mlm_mask & special_tokens_mask
 
-        mask_id = self.tokenizer.mask_token_id
-
         # Finally, we perform the masking: all tokens selected for masking are replaced
         # with "[MASK]".
-        masked_token_ids = token_ids.masked_fill(mask, mask_id)
+        masked_token_ids = token_ids.masked_fill(mask, self.tokenizer.mask_token_id)
 
         # We only want labels for the masked tokens, as that's what we're trying to
-        # predict during training. All other tokens are set to -100 in the label
-        # tensor (and consequently ignored by our loss function.)
-        labels = token_ids.masked_fill(~mask, -100)
+        # predict during training. All other tokens are set to the ignore index in the
+        # label tensor (and consequently ignored by our loss function.)
+        labels = token_ids.masked_fill(~mask, self.ignore_index)
         return masked_token_ids, labels
