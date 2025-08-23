@@ -1,1 +1,0 @@
-{"_special_tokens": ["[CLS]", "[SEP]"], "padding_token": "[PAD]", "unknown_token": "[UNK]", "mask_token": "[MASK]", "target_vocab_size": 5000}
