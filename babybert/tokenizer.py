@@ -1,12 +1,11 @@
 from __future__ import annotations
 
+import json
 import re
 import warnings
 from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
-
-import json
 
 
 @dataclass
@@ -426,7 +425,7 @@ class WordPieceTokenizer:
 
         with open(name / "tok_config.json", "w") as config_file:
             json.dump(self.config.__dict__, config_file)
-        
+
         with open(name / "vocab.txt", "w") as vocab_file:
             for token in self.vocab:
                 vocab_file.write(f"{token}\n")

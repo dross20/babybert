@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 import torch
@@ -118,3 +119,8 @@ class CollatorForMLM:
         # label tensor (and consequently ignored by our loss function.)
         labels = token_ids.masked_fill(~mask, self.ignore_index)
         return masked_token_ids, labels
+
+
+def load_corpus(path: str | Path) -> list[str]:
+    path = Path(path)
+    return path.read_text().split("\n")
