@@ -122,5 +122,14 @@ class CollatorForMLM:
 
 
 def load_corpus(path: str | Path) -> list[str]:
+    """
+    Loads a corpus from a `.txt` file. Assumes that each sentence is separated by a
+    newline.
+
+    Args:
+        path: The path to the `.txt` file containing the corpus.
+    Returns:
+        A `list[str]` containing each sentence from the corpus.
+    """
     path = Path(path)
     return path.read_text().split("\n")
