@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 import torch
 from torch.utils.data import DataLoader, Dataset
+from tqdm import tqdm
 
 if TYPE_CHECKING:
     import torch.nn as nn
@@ -38,13 +39,15 @@ class Trainer:
             data,
             batch_size=config.batch_size,
             num_workers=config.num_workers,
-            shuffle=True,
             collate_fn=config.collator,
+            sampler=torch.utils.data.RandomSampler(
+                data, replacement=True, num_samples=self.config.num_samples
+            ),
         )
 
         model.train()
 
-        for batch in loader:
+        for batch in tqdm(loader):
             batch = [sample.to(self.device) for sample in batch]
             x, masks, y = batch
             _, loss = model(x, mask=masks, labels=y)

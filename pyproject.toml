@@ -7,7 +7,8 @@ dynamic = ["version"]
 name = "babybert"
 dependencies = [
     "torch",
-    "numpy"
+    "numpy",
+    "tqdm"
 ]
 requires-python = ">=3.9"
 authors = [
