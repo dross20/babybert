@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import math
+from dataclasses import dataclass
 from pathlib import Path
 
 import torch
@@ -9,9 +10,39 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
+@dataclass
 class BabyBERTConfig:
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
+    """
+    Configuration class for BabyBERT.
+
+    Attributes:
+        vocab_size: The vocab size of the tokenizer used to create inputs.
+        hidden_size: The size of the model's hidden states. Must be divisible by
+                     `n_heads`.
+        block_size: The maximum input sequence length.
+        n_blocks: The number of transformer blocks to use.
+        n_heads: The number of attention heads to use.
+        attention_dropout_probability: The dropout probability for the output of each
+                                       attention head.
+        attention_projection_dropout_probability: The dropout probability for the
+                                                  output projection of a multi-head
+                                                  self-attention block.
+        mlp_dropout_probability: The dropout probability for the MLP used for tokenwise
+                                 learning.
+        embedding_dropout_probability: The dropout probability for input sequence
+                                       embeddings.
+    """
+
+    vocab_size: int
+    hidden_size: int = 768
+    block_size: int = 512
+    n_blocks: int = 12
+    n_heads: int = 12
+    attention_dropout_probability: float = 0.1
+    attention_projection_dropout_probability: float = 0.1
+    mlp_dropout_probability: float = 0.1
+    embedding_dropout_probability: float = 0.1
+    ignore_index: int = -100
 
 
 class AttentionHead(nn.Module):
