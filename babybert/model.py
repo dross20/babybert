@@ -286,6 +286,7 @@ class BabyBERTForMLM(nn.Module):
 
         return mlm_logits, loss
 
+
 class BabyBERTForSentimentAnalysis(nn.Module):
     """BabyBERT model with added sentiment analysis head."""
 
@@ -314,9 +315,6 @@ class BabyBERTForSentimentAnalysis(nn.Module):
         if labels is not None:
             # Calculate the difference between the class predictions and the ground
             # truth label
-            loss = F.cross_entropy(
-                input=sentiment_scores,
-                target=labels
-            )
+            loss = F.cross_entropy(input=sentiment_scores, target=labels)
 
         return sentiment_scores, loss

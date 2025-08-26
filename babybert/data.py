@@ -1,11 +1,11 @@
 from __future__ import annotations
 
+from collections import defaultdict
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 import torch
 from torch.utils.data import Dataset
-from collections import defaultdict
 
 if TYPE_CHECKING:
     from tokenizer import WordPieceTokenizer
@@ -26,7 +26,10 @@ class LanguageModelingDataset(Dataset):
 
     def __getitem__(
         self, index: int
-    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor] | tuple[torch.Tensor, torch.Tensor]:
+    ) -> (
+        tuple[torch.Tensor, torch.Tensor, torch.Tensor]
+        | tuple[torch.Tensor, torch.Tensor]
+    ):
         if self.labels is not None:
             return self.token_ids[index], self.attention_mask[index], self.labels[index]
         else:
@@ -51,7 +54,7 @@ class LanguageModelingDataset(Dataset):
         return cls(
             data.get("token_ids"), data.get("attention_mask"), data.get("labels")
         )
-    
+
 
 class CollatorForMLM:
     """Data collator for applying masks to batches of tokens."""
@@ -111,7 +114,7 @@ class CollatorForMLM:
         # we create another mask for special tokens.
         special_tokens_mask = ~torch.isin(
             token_ids,
-            torch.tensor(self.tokenizer.special_token_ids, device=token_ids.device)
+            torch.tensor(self.tokenizer.special_token_ids, device=token_ids.device),
         )
 
         # We combine our MLM and special tokens masks together to form our final mask.
@@ -141,34 +144,35 @@ def load_corpus(path: str | Path) -> list[str]:
     path = Path(path)
     return path.read_text().split("\n")
 
+
 def load_dataset(path: str | Path) -> dict[str, list[str] | list[int]]:
-        """
-        Loads a dataset from a `.txt` file.
+    """
+    Loads a dataset from a `.txt` file.
 
-        Args:
-            path: The path to the `.txt` file containing the dataset. The contents of
-                  the file should be of the following form:
+    Args:
+        path: The path to the `.txt` file containing the dataset. The contents of
+              the file should be of the following form:
 
-                  ```
-                  <text 1>
-                  <integer label for text 1>
-                  <text 2>
-                  <integer label for text 2>
-                  ...
-                  ```
-        Returns:
-            A new dataset object with values populated from the text file.
-        """
-        lines = load_corpus(path)
+              ```
+              <text 1>
+              <integer label for text 1>
+              <text 2>
+              <integer label for text 2>
+              ...
+              ```
+    Returns:
+        A new dataset object with values populated from the text file.
+    """
+    lines = load_corpus(path)
 
-        if len(lines) % 2 != 0:
-            raise ValueError(
-                f"The file '{path}' contains an invalid dataset. Make sure that your"
-                "file contains alternating lines of texts and labels."
-            )
+    if len(lines) % 2 != 0:
+        raise ValueError(
+            f"The file '{path}' contains an invalid dataset. Make sure that your"
+            "file contains alternating lines of texts and labels."
+        )
 
-        data_dict = defaultdict(list)
-        for text, label in zip(lines[::2], lines[1::2]):
-            data_dict['text'].append(text)
-            data_dict['label'].append(int(label))
-        return dict(data_dict)
+    data_dict = defaultdict(list)
+    for text, label in zip(lines[::2], lines[1::2]):
+        data_dict["text"].append(text)
+        data_dict["label"].append(int(label))
+    return dict(data_dict)

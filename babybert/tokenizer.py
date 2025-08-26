@@ -41,7 +41,7 @@ class TokenizerConfig:
             self.padding_token,
             self.unknown_token,
             self.mask_token,
-            self.cls_token
+            self.cls_token,
         ]
 
 
