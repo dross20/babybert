@@ -1,14 +1,15 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Callable
 
 import torch
 from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
-from dataclasses import dataclass
 
 if TYPE_CHECKING:
     import torch.nn as nn
+
 
 @dataclass
 class TrainerConfig:
@@ -58,7 +59,7 @@ class Trainer:
             colour="yellow",
             desc="Training",
             unit="samples",
-            unit_scale=config.batch_size
+            unit_scale=config.batch_size,
         )
 
         for batch in pbar:
