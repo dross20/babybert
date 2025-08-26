@@ -37,7 +37,7 @@ pip install git+https://github.com/dross20/babybert
 - [ ] Set up pretrained model checkpoints
 
 ### Usage Examples
-- [ ] Pretraining
+- [x] Pretraining
 - [ ] Sentiment classification
 - [ ] Named entity recognition
 - [ ] Question answering
