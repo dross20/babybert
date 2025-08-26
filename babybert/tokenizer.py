@@ -21,15 +21,17 @@ class TokenizerConfig:
                        tokenizer's vocabulary.
         mask_token: The token used for masking sequences during masked language
                     modeling.
+        classification_token: The token used for downstream classification tasks.
         target_vocab_size: The vocab size that the tokenizer should attempt to reach.
                            If the corpus used for training is too small, it is possible
                            that the vocab of the tokenizer may not reach this size.
     """
 
-    _special_tokens: list[str] = field(default_factory=lambda: ["[CLS]", "[SEP]"])
+    _special_tokens: list[str] = field(default_factory=lambda: ["[SEP]"])
     padding_token: str = "[PAD]"
     unknown_token: str = "[UNK]"
     mask_token: str = "[MASK]"
+    cls_token: str = "[CLS]"
     target_vocab_size: int = 1000
 
     @property
@@ -39,6 +41,7 @@ class TokenizerConfig:
             self.padding_token,
             self.unknown_token,
             self.mask_token,
+            self.cls_token
         ]
 
 
@@ -293,7 +296,7 @@ class WordPieceTokenizer:
         encoded = [
             token for word in pretokenized_words for token in self._encode_word(word)
         ]
-        return encoded
+        return [self.config.cls_token] + encoded
 
     def get_token_index(self, token: str) -> int:
         """
