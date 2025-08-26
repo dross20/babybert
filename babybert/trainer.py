@@ -13,10 +13,23 @@ if TYPE_CHECKING:
 
 @dataclass
 class TrainerConfig:
+    """
+    Configuration class for a trainer.
+
+    Attributes:
+        device: The device on which to perform training.
+        learning_rate: The fixed learning rate to use.
+        batch_size: The size of each training batch.
+        num_workers: The number of subprocess workers to use for loading data.
+        collator: The function to use for batching samples.
+        num_samples: The number of samples to use during training.
+        max_grad_norm: The max norm to which gradient are clipped.
+    """
+
     device: str = "cpu"
     learning_rate: float = 1e-4
     batch_size: int = 64
-    num_workers: int = 1
+    num_workers: int = 0
     collator: Callable | None = None
     num_samples: int = 100_000
     max_grad_norm: float = 1
