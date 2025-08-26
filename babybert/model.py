@@ -17,9 +17,9 @@ class BabyBERTConfig:
 
     Attributes:
         vocab_size: The vocab size of the tokenizer used to create inputs.
+        block_size: The length of the input sequences.
         hidden_size: The size of the model's hidden states. Must be divisible by
                      `n_heads`.
-        block_size: The maximum input sequence length.
         n_blocks: The number of transformer blocks to use.
         n_heads: The number of attention heads to use.
         attention_dropout_probability: The dropout probability for the output of each
@@ -34,8 +34,8 @@ class BabyBERTConfig:
     """
 
     vocab_size: int
+    block_size: int
     hidden_size: int = 768
-    block_size: int = 512
     n_blocks: int = 12
     n_heads: int = 12
     attention_dropout_probability: float = 0.1

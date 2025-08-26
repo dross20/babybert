@@ -1,18 +1,24 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 import torch
 from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
+from dataclasses import dataclass
 
 if TYPE_CHECKING:
     import torch.nn as nn
 
-
+@dataclass
 class TrainerConfig:
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
+    device: str = "cpu"
+    learning_rate: float = 1e-4
+    batch_size: int = 64
+    num_workers: int = 1
+    collator: Callable | None = None
+    num_samples: int = 100_000
+    max_grad_norm: float = 1
 
 
 class Trainer:
@@ -33,7 +39,7 @@ class Trainer:
         model = self.model
         config = self.config
 
-        optimizer = torch.optim.Adam(model.parameters(), self.config.learning_rate)
+        optimizer = torch.optim.Adam(model.parameters(), config.learning_rate)
 
         loader = DataLoader(
             data,
@@ -41,16 +47,26 @@ class Trainer:
             num_workers=config.num_workers,
             collate_fn=config.collator,
             sampler=torch.utils.data.RandomSampler(
-                data, replacement=True, num_samples=self.config.num_samples
+                data, replacement=True, num_samples=config.num_samples
             ),
         )
 
         model.train()
 
-        for batch in tqdm(loader):
+        pbar = tqdm(
+            loader,
+            colour="yellow",
+            desc="Training",
+            unit="samples",
+            unit_scale=config.batch_size
+        )
+
+        for batch in pbar:
             batch = [sample.to(self.device) for sample in batch]
             x, masks, y = batch
             _, loss = model(x, mask=masks, labels=y)
+
+            pbar.set_postfix({"loss": f"{loss:.4f}"})
 
             optimizer.zero_grad()
 

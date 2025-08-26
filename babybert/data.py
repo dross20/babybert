@@ -30,6 +30,11 @@ class LanguageModelingDataset(Dataset):
             return self.token_ids[index], self.attention_mask[index], self.labels[index]
         else:
             return self.token_ids[index], self.attention_mask[index]
+        
+    @property
+    def seq_length(self) -> int:
+        """Returns the length of the sequences in the dataset."""
+        return len(self.token_ids[0])
 
     @classmethod
     def from_dict(cls, data: dict[str, list[int]]) -> LanguageModelingDataset:
