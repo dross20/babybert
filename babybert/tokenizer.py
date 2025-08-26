@@ -10,7 +10,19 @@ from pathlib import Path
 
 @dataclass
 class TokenizerConfig:
-    """Configuration class for a tokenizer."""
+    """
+    Configuration class for a tokenizer.
+
+    Attributes:
+        _special_tokens: A list of all special tokens that's down have their own
+                         attributes.
+        padding_token: The token used for padding sequences to a specified length.
+        unknown_token: The token used for representing words or subwords outside of the
+                       tokenizer's vocabulary.
+        mask_token: The token used for masking sequences during masked language
+                    modeling.
+        target_vocab_size: The vocab size that the tokenizer should attempt to reach.
+    """
 
     _special_tokens: list[str] = field(default_factory=lambda: ["[CLS]", "[SEP]"])
     padding_token: str = "[PAD]"
