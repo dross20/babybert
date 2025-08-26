@@ -22,6 +22,8 @@ class TokenizerConfig:
         mask_token: The token used for masking sequences during masked language
                     modeling.
         target_vocab_size: The vocab size that the tokenizer should attempt to reach.
+                           If the corpus used for training is too small, it is possible
+                           that the vocab of the tokenizer may not reach this size.
     """
 
     _special_tokens: list[str] = field(default_factory=lambda: ["[CLS]", "[SEP]"])
