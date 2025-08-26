@@ -38,7 +38,7 @@ pip install git+https://github.com/dross20/babybert
 
 ### Usage Examples
 - [x] Pretraining
-- [ ] Sentiment classification
+- [x] Sentiment analysis
 - [ ] Named entity recognition
 - [ ] Question answering
 

@@ -309,6 +309,8 @@ class BabyBERTForSentimentAnalysis(nn.Module):
         # class using the [CLS] embedding.
         sentiment_scores = self.sentiment_analysis_head(cls_embeddings)
 
+        loss = None
+
         if labels is not None:
             # Calculate the difference between the class predictions and the ground
             # truth label
