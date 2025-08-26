@@ -285,3 +285,36 @@ class BabyBERTForMLM(nn.Module):
             )
 
         return mlm_logits, loss
+
+class BabyBERTForSentimentAnalysis(nn.Module):
+    """BabyBERT model with added sentiment analysis head."""
+
+    def __init__(self, bert: BabyBERT):
+        super().__init__()
+
+        self.bert = bert
+        self.config = self.bert.config
+
+        # Projection from each BabyBERT classification token embedding to a predicted
+        # sentiment score (positive or negative)
+        self.sentiment_analysis_head = nn.Linear(self.config.hidden_size, 2)
+
+    def forward(self, x, mask=None, labels=None):
+        x = self.bert(x, mask)
+
+        # Obtain the [CLS] token embedding from each sequence in the batch.
+        cls_embeddings = x[:, 0, :]
+
+        # Use our sentiment analysis head to predict a probability for each sentiment
+        # class using the [CLS] embedding.
+        sentiment_scores = self.sentiment_analysis_head(cls_embeddings)
+
+        if labels is not None:
+            # Calculate the difference between the class predictions and the ground
+            # truth label
+            loss = F.cross_entropy(
+                input=sentiment_scores,
+                target=labels
+            )
+
+        return sentiment_scores, loss
