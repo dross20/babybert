@@ -4,6 +4,7 @@ import json
 import math
 from dataclasses import dataclass
 from pathlib import Path
+from typing import ClassVar
 
 import torch
 import torch.nn as nn
@@ -43,6 +44,52 @@ class BabyBERTConfig:
     mlp_dropout_probability: float = 0.1
     embedding_dropout_probability: float = 0.1
     ignore_index: int = -100
+
+    _PRESETS: ClassVar[dict[str, dict]] = {
+        "tiny": {
+            "hidden_size": 128,
+            "n_blocks": 2,
+            "n_heads": 2,
+        },
+        "small": {
+            "hidden_size": 256,
+            "n_blocks": 4,
+            "n_heads": 4,
+        },
+        "base": {
+            "hidden_size": 768,
+            "n_blocks": 12,
+            "n_heads": 12,
+        },
+    }
+
+    @classmethod
+    def from_preset(cls, name: str, **kwargs) -> BabyBERTConfig:
+        """
+        Load a configuration object from a preset.
+
+        **Note**: The configuration presets only contain values for `hidden_size`,
+        `n_blocks`, and `n_heads`. Other required attributes without defaults, such as
+        `vocab_size` and `block_size`, must be passed in as keyword arguments to this
+        method. Keyword arguments with defaults can optionally be included as well.
+
+        **Available presets**:
+        - `"tiny"`: `hidden_size=128`, `n_blocks=2`, `n_heads=2`
+        - `"small"`: `hidden_size=256`, `n_blocks=4`, `n_heads=4`
+        - `"base"`: `hidden_size=768`, `n_blocks=12`, `n_heads=12`
+
+        Args:
+            name: The name of the configuration preset from which to load.
+        Returns:
+            A new configuration object, with values populated by the defaults.
+        """
+        if name not in cls._PRESETS:
+            available = ", ".join(f"'{key}'" for key in cls._PRESETS.keys())
+            raise ValueError(
+                f"Preset config '{name}' is not available."
+                f"Available presets: {available}"
+            )
+        return cls(**cls._PRESETS[name], **kwargs)
 
 
 class AttentionHead(nn.Module):
