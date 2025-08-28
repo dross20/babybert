@@ -27,6 +27,27 @@ See the [roadmap](#%EF%B8%8F-roadmap) below for my future plans for this library
 pip install git+https://github.com/dross20/babybert
 ```
 
+## 🚀 Quickstart
+
+```python
+from babybert.tokenizer import WordPieceTokenizer
+from babybert.model import BabyBERTConfig, BabyBERT
+
+# Load a pretrained tokenizer and encode a text
+tokenizer = WordPieceTokenizer.from_pretrained("toy-tokenizer")
+encoded = tokenizer.batch_encode(["Hello, world!"])
+
+# Initialize an untrained BabyBERT model
+model_cfg = BabyBERTConfig.from_preset(
+  "tiny", vocab_size=tokenizer.vocab_size, block_size=len(encoded['token_ids'][0])
+)
+model = BabyBERT(model_cfg)
+
+# Obtain contextual embeddings
+hidden = model(**encoded)
+print(hidden)
+```
+
 ## 🗺️ Roadmap
 
 ### Model Implementation
