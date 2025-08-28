@@ -30,4 +30,4 @@ It's possible that you'll need to make some changes to your code before the comm
 
 Once the `make all` commands passes, you're ready to stage, commit, and push your changes!
 ### Create a new pull request
-Once you've pushed your changes, navigate to your forked repository and click "Pull Request" to create a new pull request. Make sure to leave a helpful description that outlines the changes you've made. You can also tag me too (by including @dross20 in your description) so that I'll see your PR sooner!
+Once you've pushed your changes, navigate to your forked repository and click "Pull Request" to create a new pull request. Make sure to leave a helpful description that outlines the changes you've made. You can also tag me too (by including "@dross20" in your description) so that I'll see your PR sooner!
