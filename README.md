@@ -28,7 +28,7 @@ pip install git+https://github.com/dross20/babybert
 ```
 
 ## 🚀 Quickstart
-
+The following example demonstrates how to tokenize text, instantiate a BabyBERT model, and obtain contextual embeddings:
 ```python
 from babybert.tokenizer import WordPieceTokenizer
 from babybert.model import BabyBERTConfig, BabyBERT
