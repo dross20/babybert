@@ -9,6 +9,7 @@ from typing import ClassVar
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from utils import resolve_checkpoint_path
 
 
 @dataclass
@@ -261,7 +262,7 @@ class BabyBERT(nn.Module):
             An instance of `BabyBERT` with configuration settings and weights loaded
             from the input directory.
         """
-        name = Path(name)
+        name = resolve_checkpoint_path(name)
 
         with open(name / "config.json", "r") as config_file:
             config_dict = json.load(config_file)

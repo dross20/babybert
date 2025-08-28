@@ -6,7 +6,7 @@ import warnings
 from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
-
+from babybert.utils import resolve_checkpoint_path
 
 @dataclass
 class TokenizerConfig:
@@ -415,7 +415,7 @@ class WordPieceTokenizer:
             A `WordPieceTokenizer` with a pretrained vocabulary and preset
             configuration.
         """
-        name = Path(name)
+        name = resolve_checkpoint_path(name)
 
         with open(name / "tok_config.json", "r") as config_file:
             config_dict = json.load(config_file)
