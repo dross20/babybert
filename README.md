@@ -24,7 +24,7 @@ See the [roadmap](#%EF%B8%8F-roadmap) below for my future plans for this library
 ## 📦 Installation
 
 ```bash
-pip install git+https://github.com/dross20/babybert
+pip install babybert
 ```
 
 ## 🚀 Quickstart
