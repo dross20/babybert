@@ -28,7 +28,7 @@ pip install babybert
 ```
 
 ## 🚀 Quickstart
-
+The following example demonstrates how to tokenize text, instantiate a BabyBERT model, and obtain contextual embeddings:
 ```python
 from babybert.tokenizer import WordPieceTokenizer
 from babybert.model import BabyBERTConfig, BabyBERT
@@ -47,6 +47,9 @@ model = BabyBERT(model_cfg)
 hidden = model(**encoded)
 print(hidden)
 ```
+
+> [!TIP]
+> For more usage examples, check out the [`examples/`](https://github.com/dross20/babybert/tree/9b9c0107157cc1d43771162408ebde20739b076e/examples) directory!
 
 ## 🗺️ Roadmap
 
