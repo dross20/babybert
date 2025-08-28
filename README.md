@@ -48,6 +48,8 @@ hidden = model(**encoded)
 print(hidden)
 ```
 
+For more usage examples, check out the [`examples/`](https://github.com/dross20/babybert/tree/9b9c0107157cc1d43771162408ebde20739b076e/examples) directory!
+
 ## 🗺️ Roadmap
 
 ### Model Implementation
