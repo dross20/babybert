@@ -6,7 +6,11 @@ import warnings
 from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
+
+import torch
+
 from babybert.utils import resolve_checkpoint_path
+
 
 @dataclass
 class TokenizerConfig:
@@ -334,7 +338,7 @@ class WordPieceTokenizer:
 
     def batch_encode(
         self, texts: list[str], padding: bool = True, padding_length: int | None = None
-    ) -> dict[str, list[int]]:
+    ) -> dict[str, torch.Tensor]:
         """
         Encodes a batch of texts as token ID lists.
 
@@ -362,7 +366,10 @@ class WordPieceTokenizer:
             for toks in token_ids
         ]
 
-        return {"token_ids": token_ids, "attention_mask": attention_mask}
+        return {
+            "token_ids": torch.tensor(token_ids),
+            "attention_mask": torch.tensor(attention_mask),
+        }
 
     def decode(
         self, token_ids: list[int], ignore_special_tokens: bool = True

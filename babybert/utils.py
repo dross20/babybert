@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from pathlib import Path
 import importlib.resources
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from importlib.abc import Traversable
+
 
 def resolve_checkpoint_path(name: str | Path) -> Path | Traversable:
     """
@@ -30,14 +31,14 @@ def resolve_checkpoint_path(name: str | Path) -> Path | Traversable:
     # directory.
     if (local_dir := Path(name)).is_dir():
         return local_dir
-    
+
     # Otherwise, search for the checkpoint in the library's `checkpoints/`
     # directory.
-    checkpoints_dir = importlib.resources.files('babybert.checkpoints')
+    checkpoints_dir = importlib.resources.files("babybert.checkpoints")
 
     if (checkpoint_dir := checkpoints_dir / name).is_dir():
         return checkpoint_dir
-    
+
     available_checkpoints = ", ".join(dir.name for dir in checkpoints_dir.iterdir())
 
     raise FileNotFoundError(

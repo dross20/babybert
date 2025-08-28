@@ -15,10 +15,13 @@ class LanguageModelingDataset(Dataset):
     """Class for storing an LM dataset."""
 
     def __init__(
-        self, token_ids: list[list[int]], attention_mask: list[list[int]], labels=None
+        self,
+        token_ids: torch.Tensor,
+        attention_mask: torch.Tensor,
+        labels: list[int] | torch.Tensor | None = None,
     ):
-        self.token_ids = torch.tensor(token_ids)
-        self.attention_mask = torch.tensor(attention_mask)
+        self.token_ids = token_ids
+        self.attention_mask = attention_mask
         self.labels = torch.tensor(labels) if labels else None
 
     def __len__(self) -> int:
@@ -41,7 +44,7 @@ class LanguageModelingDataset(Dataset):
         return self.token_ids.size(1)
 
     @classmethod
-    def from_dict(cls, data: dict[str, list[list[int]]]) -> LanguageModelingDataset:
+    def from_dict(cls, data: dict[str, torch.Tensor]) -> LanguageModelingDataset:
         """
         Create a new dataset instance from a dictionary.
 

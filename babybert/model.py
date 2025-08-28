@@ -9,7 +9,8 @@ from typing import ClassVar
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from utils import resolve_checkpoint_path
+
+from babybert.utils import resolve_checkpoint_path
 
 
 @dataclass
@@ -222,21 +223,21 @@ class BabyBERT(nn.Module):
             [TransformerBlock(config) for _ in range(config.n_blocks)]
         )
 
-    def forward(self, x, mask=None, segment_encodings=None):
+    def forward(self, token_ids, attention_mask=None, segment_encodings=None):
         # Get the position IDs - these range from 0 to the max length of an input
         # sequence (stored in the block_size variable).
         position_ids = torch.arange(
-            0, self.config.block_size, device=x.device
+            0, self.config.block_size, device=token_ids.device
         ).unsqueeze(0)
 
         # If no segment encodings tensor was passed in, assume everything belongs
         # to the first segment (represented by '0')
         if segment_encodings is None:
-            segment_encodings = torch.zeros_like(x)
+            segment_encodings = torch.zeros_like(token_ids)
 
         # Sum the token, segment, and positional embeddings to obtain the complete
         # embedding tensor.
-        x = self.token_embeddings(x)
+        x = self.token_embeddings(token_ids)
         x = x + self.segment_embeddings(segment_encodings)
         x = x + self.positional_embeddings(position_ids)
 
@@ -244,7 +245,7 @@ class BabyBERT(nn.Module):
 
         # Pass the embeddings through each transformer block in our model.
         for block in self.transformer_blocks:
-            x = block(x, mask)
+            x = block(x, attention_mask)
 
         return x
 
@@ -307,8 +308,8 @@ class BabyBERTForMLM(nn.Module):
         # Projection from each BabyBERT contextual embedding to the vocabulary space.
         self.mlm_head = nn.Linear(self.config.hidden_size, self.config.vocab_size)
 
-    def forward(self, x, mask=None, labels=None):
-        x = self.bert(x, mask)
+    def forward(self, token_ids, attention_mask=None, labels=None):
+        x = self.bert(token_ids, attention_mask)
 
         # Obtain the logits for each contextual embedding - we'll only use the logits
         # from the [MASK] tokens.
@@ -348,8 +349,8 @@ class BabyBERTForSentimentClassification(nn.Module):
         # sentiment score (positive or negative)
         self.sentiment_classification_head = nn.Linear(self.config.hidden_size, 2)
 
-    def forward(self, x, mask=None, labels=None):
-        x = self.bert(x, mask)
+    def forward(self, token_ids, attention_mask=None, labels=None):
+        x = self.bert(token_ids, attention_mask)
 
         # Obtain the [CLS] token embedding from each sequence in the batch.
         cls_embeddings = x[:, 0, :]
