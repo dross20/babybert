@@ -68,9 +68,8 @@ print(hidden)
 - [ ] Named entity recognition
 - [ ] Question answering
 
+## 🤝 Contributing
+Contributions to this project are welcome! See the the [contributing page](https://github.com/dross20/babybert?tab=contributing-ov-file) for more details.
 
-
-
-
-
-
+## 📜 License
+This project is licensed under the [MIT license](https://github.com/dross20/babybert?tab=MIT-1-ov-file).
