@@ -1,4 +1,13 @@
-# Contributing to BabyBERT
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://i.imgur.com/oUqn92A.png">
+    <source media="(prefers-color-scheme: light)" srcset="https://i.imgur.com/jPNp9xc.png">
+    <img src="https://i.imgur.com/jPNp9xc.png" width="420" style="height: auto;" alt="BabyBERT logo"></img>
+  </picture>
+</p>
+
+---
+
 Thanks for considering making a contribution to BabyBERT! Any help on this project is greatly welcomed. Feel free to open up an issue if you see a bug to fix, or a PR if you'd like to implement a new feature.
 
 ## Making code contributions
