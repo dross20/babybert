@@ -1,8 +1,8 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://i.imgur.com/oUqn92A.png">
-    <source media="(prefers-color-scheme: light)" srcset="https://i.imgur.com/jPNp9xc.png">
-    <img src="https://i.imgur.com/jPNp9xc.png" width="420" style="height: auto;" alt="BabyBERT logo"></img>
+    <source media="(prefers-color-scheme: dark)" srcset="https://i.imgur.com/iQPJLc7.png">
+    <source media="(prefers-color-scheme: light)" srcset="https://i.imgur.com/Qap3ZbE.png">
+    <img src="https://i.imgur.com/Qap3ZbE.png" width="407" style="height: auto;" alt="BabyBERT logo"></img>
   </picture>
 </p>
 
