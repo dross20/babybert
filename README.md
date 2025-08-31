@@ -53,6 +53,14 @@ print(hidden)
 > [!TIP]
 > For more usage examples, check out the [`examples/`](https://github.com/dross20/babybert/tree/9b9c0107157cc1d43771162408ebde20739b076e/examples) directory!
 
+## 📐 Architecture
+The following diagram is a simplified representation of BabyBERT's architecture.
+
+<br>
+<p align="center">
+  <img src="https://i.imgur.com/fxn0hNQ.png" width=800/>
+</p>
+
 ## 🗺️ Roadmap
 
 ### Model Implementation
