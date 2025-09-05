@@ -202,6 +202,50 @@ class TransformerBlock(nn.Module):
 class BabyBERT(nn.Module):
     """Minimal implementation of [BERT](https://arxiv.org/pdf/1810.04805)."""
 
+    @staticmethod
+    def _generate_positional_embeddings(seq_length: int, hidden_size: int) -> torch.Tensor:
+        """
+        Generates sinusoidal positional embeddings according to the formula proposed in
+        the [original Transformer paper](https://arxiv.org/pdf/1706.03762).
+
+        These positional embeddings capture short and long-term positional dependencies
+        across a sequence. The trigonometric waves at the lower embedding dimensions
+        oscillate quickly, allowing the model to distinguish elements in the sequence
+        from their neighbors, while the waves at higher embedding dimensions oscillate
+        more slowly and provide the model a long-range position signal.
+
+        Args:
+            seq_length: The length of the sequences for which to create the positional
+                        embeddings.
+            hidden_size: The hidden size of each element in the input sequence.
+        Returns:
+            The positional embeddings with which to sum the input element embeddings.
+        """
+        # The position IDs store the index of each element in the sequence.
+        position_ids = torch.arange(0, seq_length).unsqueeze(1)
+
+        # The hidden IDs store a coordinate for each dimension in the embedding space.
+        # Note that we only generate up to hidden size divided by 2, since we use each
+        # hidden ID for both an even and odd index.
+        hidden_ids = torch.arange(hidden_size // 2)
+
+        # The denominator from the Transformer positional embedding formulation. This
+        # controls the frequency of the sinusoids.
+        denominator = torch.pow(10_000, 2 * (hidden_ids / hidden_size))
+
+        # We take the quotient of the position IDs and the denominators to get our
+        # angles, which we later pass as input to our trigonometric functions.
+        angles = position_ids / denominator
+
+        positional_embeddings = torch.zeros((seq_length, hidden_size))
+
+        # At even indices, obtain the embeddings using sine; at odd indices, use
+        # cosine.
+        positional_embeddings[:, 0::2] = torch.sin(angles)
+        positional_embeddings[:, 1::2] = torch.cos(angles)
+
+        return positional_embeddings
+
     def __init__(self, config: BabyBERTConfig):
         super().__init__()
 
@@ -213,10 +257,11 @@ class BabyBERT(nn.Module):
         # Learned embeddings for each segment; we only have segments 1 and 2 in BERT.
         self.segment_embeddings = nn.Embedding(2, config.hidden_size)
 
-        # Learned embeddings for each token position.
+        # Sinusoidal embeddings for each token position.
         # Having positional embeddings is necessary for the model to understand the
         # order of the input tokens.
-        self.positional_embeddings = nn.Embedding(config.block_size, config.hidden_size)
+        self.register_buffer("positional_embeddings", BabyBERT._generate_positional_embeddings(config.block_size, config.hidden_size))
+        # self.positional_embeddings = nn.Embedding(config.block_size, config.hidden_size)
 
         self.dropout = nn.Dropout(config.embedding_dropout_probability)
         self.transformer_blocks = nn.ModuleList(
@@ -239,7 +284,7 @@ class BabyBERT(nn.Module):
         # embedding tensor.
         x = self.token_embeddings(token_ids)
         x = x + self.segment_embeddings(segment_encodings)
-        x = x + self.positional_embeddings(position_ids)
+        x = x + self.positional_embeddings
 
         x = self.dropout(x)
 
