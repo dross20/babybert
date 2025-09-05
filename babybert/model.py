@@ -34,6 +34,9 @@ class BabyBERTConfig:
                                  learning.
         embedding_dropout_probability: The dropout probability for input sequence
                                        embeddings.
+        use_learned_embeddings: If true, the model will use learned positional
+                                embeddings. Otherwise, the model will used fixed
+                                sinusoidal embeddings.
     """
 
     vocab_size: int
