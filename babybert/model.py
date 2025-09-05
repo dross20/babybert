@@ -203,7 +203,9 @@ class BabyBERT(nn.Module):
     """Minimal implementation of [BERT](https://arxiv.org/pdf/1810.04805)."""
 
     @staticmethod
-    def _generate_positional_embeddings(seq_length: int, hidden_size: int) -> torch.Tensor:
+    def _generate_positional_embeddings(
+        seq_length: int, hidden_size: int
+    ) -> torch.Tensor:
         """
         Generates sinusoidal positional embeddings according to the formula proposed in
         the [original Transformer paper](https://arxiv.org/pdf/1706.03762).
@@ -260,8 +262,12 @@ class BabyBERT(nn.Module):
         # Sinusoidal embeddings for each token position.
         # Having positional embeddings is necessary for the model to understand the
         # order of the input tokens.
-        self.register_buffer("positional_embeddings", BabyBERT._generate_positional_embeddings(config.block_size, config.hidden_size))
-        # self.positional_embeddings = nn.Embedding(config.block_size, config.hidden_size)
+        self.register_buffer(
+            "positional_embeddings",
+            BabyBERT._generate_positional_embeddings(
+                config.block_size, config.hidden_size
+            ),
+        )
 
         self.dropout = nn.Dropout(config.embedding_dropout_probability)
         self.transformer_blocks = nn.ModuleList(
@@ -269,12 +275,6 @@ class BabyBERT(nn.Module):
         )
 
     def forward(self, token_ids, attention_mask=None, segment_encodings=None):
-        # Get the position IDs - these range from 0 to the max length of an input
-        # sequence (stored in the block_size variable).
-        position_ids = torch.arange(
-            0, self.config.block_size, device=token_ids.device
-        ).unsqueeze(0)
-
         # If no segment encodings tensor was passed in, assume everything belongs
         # to the first segment (represented by '0')
         if segment_encodings is None:
