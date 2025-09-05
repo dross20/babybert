@@ -46,6 +46,7 @@ class BabyBERTConfig:
     mlp_dropout_probability: float = 0.1
     embedding_dropout_probability: float = 0.1
     ignore_index: int = -100
+    use_learned_embeddings: bool = True
 
     _PRESETS: ClassVar[dict[str, dict]] = {
         "tiny": {
@@ -259,15 +260,22 @@ class BabyBERT(nn.Module):
         # Learned embeddings for each segment; we only have segments 1 and 2 in BERT.
         self.segment_embeddings = nn.Embedding(2, config.hidden_size)
 
-        # Sinusoidal embeddings for each token position.
+        # Embeddings for each token position.
         # Having positional embeddings is necessary for the model to understand the
         # order of the input tokens.
-        self.register_buffer(
-            "positional_embeddings",
-            BabyBERT._generate_positional_embeddings(
+        if config.use_learned_embeddings:
+            # Learned positional embeddings are adjusted by the model during training.
+            self.positional_embeddings = nn.Embedding(
                 config.block_size, config.hidden_size
-            ),
-        )
+            )
+        else:
+            # Fixed positional embeddings are set during model instantation.
+            self.register_buffer(
+                "positional_embeddings",
+                BabyBERT._generate_positional_embeddings(
+                    config.block_size, config.hidden_size
+                ),
+            )
 
         self.dropout = nn.Dropout(config.embedding_dropout_probability)
         self.transformer_blocks = nn.ModuleList(
@@ -284,7 +292,19 @@ class BabyBERT(nn.Module):
         # embedding tensor.
         x = self.token_embeddings(token_ids)
         x = x + self.segment_embeddings(segment_encodings)
-        x = x + self.positional_embeddings
+
+        # If we're using learned embeddings, obtain the embedding for each position.
+        if self.config.use_learned_embeddings:
+            # Get the position IDs - these range from 0 to the max length of an input
+            # sequence (stored in the block_size variable).
+            position_ids = torch.arange(
+                0, self.config.block_size, device=token_ids.device
+            ).unsqueeze(0)
+
+            x = x + self.positional_embeddings(position_ids)
+        # Otherwise, use the fixed embeddings.
+        else:
+            x = x + self.positional_embeddings
 
         x = self.dropout(x)
 
