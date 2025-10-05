@@ -1,3 +1,5 @@
+"""Contains the BabyBERT model and related classes."""
+
 from __future__ import annotations
 
 import json

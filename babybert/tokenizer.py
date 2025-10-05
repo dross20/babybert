@@ -1,3 +1,5 @@
+"""Contains tokenizer and related classes."""
+
 from __future__ import annotations
 
 import json

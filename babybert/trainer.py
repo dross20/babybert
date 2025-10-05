@@ -1,3 +1,5 @@
+"""Contains utilities for training a neural model."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass

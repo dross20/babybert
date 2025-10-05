@@ -1,3 +1,5 @@
+"""Contains all classes related to dataset storage and processing."""
+
 from __future__ import annotations
 
 from collections import defaultdict
