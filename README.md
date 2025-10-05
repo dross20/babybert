@@ -76,6 +76,9 @@ The following diagram is a simplified representation of BabyBERT's architecture.
 - [ ] Named entity recognition
 - [ ] Question answering
 
+### Educational Features
+- [ ] Attention visualization
+
 ## 🤝 Contributing
 Contributions to this project are welcome! See the the [contributing page](https://github.com/dross20/babybert?tab=contributing-ov-file) for more details.
 
